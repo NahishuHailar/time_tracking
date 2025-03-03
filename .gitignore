@@ -1,0 +1,67 @@
+# Virtual environment  
+venv/  
+
+# Environment variables
+.env  
+.env.*  
+
+# Python cache  
+__pycache__/  
+*.py[cod]  
+*$py.class  
+
+# Log files  
+logs/  
+*.log  
+*.out  
+*.err  
+debug.log  
+
+# Configuration files  
+*.ini  
+*.toml  
+#*.yaml  
+#*.yml  
+
+# Test artifacts  
+.coverage  
+.tox/  
+.nox/  
+.pytest_cache/  
+htmlcov/  
+
+# Database files and migrations (if using SQLite)  
+*.sqlite3  
+*.db  
+*.sqlite  
+migrations/  
+
+# Security keys and certificates  
+*.pem  
+*.key  
+*.crt  
+
+# IDE and editor files  
+.vscode/  
+.idea/  
+*.iml  
+
+# Docker-related files  
+docker-compose.override.yml  
+.dockerignore  
+
+# Pip cache and dependencies  
+__pypackages__/  
+pip-wheel-metadata/  
+pip-log.txt  
+pip-delete-this-directory.txt  
+
+# MyPy cache (if using static typing)  
+.mypy_cache/  
+
+# Jupyter Notebook checkpoints (if using)  
+.ipynb_checkpoints/  
+
+# OS-specific files  
+.DS_Store  
+Thumbs.db  
