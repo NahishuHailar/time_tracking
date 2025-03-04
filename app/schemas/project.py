@@ -1,18 +1,22 @@
 from pydantic import BaseModel
-from datetime import date
 
 class ProjectBase(BaseModel):
     name: str
 
-class ProjectCreate(ProjectBase):
+class ProjectBaseSchema(BaseModel):
+    name: str
+    # description: Optional[str] = None
+
+class ProjectCreateSchema(ProjectBaseSchema):
     pass
 
-class ProjectUpdate(ProjectBase):
+class ProjectUpdateSchema(ProjectBaseSchema):
     pass
 
-class Project(ProjectBase):
+class ProjectSchema(ProjectBaseSchema):
     id: int
-    time_entries: list["TimeEntry"] = []
+    # owner_id: int
+    # created_at: datetime
 
     class Config:
         from_attributes = True

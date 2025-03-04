@@ -1,10 +1,17 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from .base import BaseORM
+from typing import List
 
-Base = declarative_base()
-
-class Project(Base):
+class ProjectORM(BaseORM):
     __tablename__ = "projects"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    time_entries = relationship("TimeEntry", back_populates="project")
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+
+    time_entries: Mapped[List["TimeEntryORM"]] = relationship(
+        "TimeEntryORM", back_populates="project", cascade="all, delete-orphan"
+    )
+    users: Mapped[List["ProjectUserORM"]] = relationship(
+        "ProjectUserORM", back_populates="project", cascade="all, delete-orphan"
+    )

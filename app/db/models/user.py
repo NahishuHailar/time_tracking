@@ -1,11 +1,14 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List
 
-Base = declarative_base()
+from .base import BaseORM
 
-class User(Base):
+class UserORM(BaseORM):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    is_manager = Column(Boolean, default=False)
-    time_entries = relationship("TimeEntry", back_populates="user")
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+
+    projects: Mapped[List["ProjectUserORM"]] = relationship("ProjectUserORM", back_populates="user")
+    time_entries: Mapped[List["TimeEntryORM"]] = relationship("TimeEntryORM", back_populates="user")

@@ -1,14 +1,16 @@
-from sqlalchemy import Column, Integer, Float, Date, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Integer, Float, Date, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-Base = declarative_base()
+from .base import BaseORM
 
-class TimeEntry(Base):
+class TimeEntryORM(BaseORM):
     __tablename__ = "time_entries"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    project_id = Column(Integer, ForeignKey("projects.id"))
-    hours = Column(Float, nullable=False)
-    date = Column(Date, nullable=False)
-    user = relationship("User", back_populates="time_entries")
-    project = relationship("Project", back_populates="time_entries")    
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    project_id: Mapped[int] = mapped_column(Integer, ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
+    hours: Mapped[float] = mapped_column(Float, nullable=False)
+    date: Mapped[Date] = mapped_column(Date, nullable=False)
+
+    user: Mapped["UserORM"] = relationship("UserORM", back_populates="time_entries")
+    project: Mapped["ProjectORM"] = relationship("ProjectORM", back_populates="time_entries")
