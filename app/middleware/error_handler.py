@@ -1,6 +1,7 @@
+from exceptions import AppError
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from exceptions import AppError
+
 
 async def app_error_handler(request: Request, exc: AppError):
     return JSONResponse(

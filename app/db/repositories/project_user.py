@@ -1,26 +1,29 @@
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
+
 from db.models.project_user import ProjectUserORM
 from db.session import database
 from exceptions import NotFoundError
+from fastapi import Depends
 from schemas.project_user import ProjectUserCreateSchema
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from typing import List
 
 
 class ProjectUserRepository:
-    def __init__(self, db: AsyncSession = Depends(database.get_db)):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def add_user_to_project(self, project_user: ProjectUserCreateSchema) -> ProjectUserORM:
+    async def add_user_to_project(
+        self, project_user: ProjectUserCreateSchema
+    ) -> ProjectUserORM:
         new_entry = ProjectUserORM(**project_user.model_dump())
         self.db.add(new_entry)
         try:
             await self.db.flush()
             return new_entry
-        except IntegrityError:
-            raise ValueError("User already added to this project.")
+        except IntegrityError as err:
+            raise ValueError("User already added to this project.") from err
 
     async def remove_user_from_project(self, user_id: int, project_id: int) -> None:
         query = select(ProjectUserORM).where(
@@ -37,3 +40,9 @@ class ProjectUserRepository:
         query = select(ProjectUserORM).where(ProjectUserORM.project_id == project_id)
         result = await self.db.execute(query)
         return result.scalars().all()
+
+
+def get_project_users_repository(
+    db: AsyncSession = Depends(database.get_db),
+) -> ProjectUserRepository:
+    return ProjectUserRepository(db)
