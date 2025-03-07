@@ -1,7 +1,7 @@
-from .bootstrap import AppFactory
-from .api.v1.endpoits import project, user,  project_user, time_entry
-from .exceptions import AppError
-from .middleware.error_handler import app_error_handler
+from app.bootstrap import AppFactory
+from app.api.v1.endpoits import project, user,  project_user, time_entry
+from app.exceptions import AppError
+from app.middleware.error_handler import app_error_handler
 
 app = AppFactory.create_app()
 
