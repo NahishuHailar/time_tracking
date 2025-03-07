@@ -1,9 +1,9 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.models.project import ProjectORM
-from schemas.project import ProjectCreateSchema, ProjectUpdateSchema
-from db.session import database
-from exceptions import NotFoundError
+from app.db.models.project import ProjectORM
+from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema
+from app.db.session import database
+from app.exceptions import NotFoundError
 from typing import Optional
 
 

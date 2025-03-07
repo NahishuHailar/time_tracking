@@ -1,6 +1,6 @@
 from fastapi import Depends
-from db.repositories.project import ProjectRepository
-from schemas.project import ProjectCreateSchema, ProjectUpdateSchema, ProjectSchema
+from app.db.repositories.project import ProjectRepository
+from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema, ProjectSchema
 from typing import Optional
 
 class ProjectService:
