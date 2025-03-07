@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from services.user import UserService
-from schemas.user import UserCreateSchema, UserUpdateSchema, UserSchema
+from app.services.user import UserService
+from app.schemas.user import UserCreateSchema, UserUpdateSchema, UserSchema
 
 router = APIRouter()
 

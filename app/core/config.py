@@ -1,4 +1,6 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     postgres_user: str
@@ -9,7 +11,7 @@ class Settings(BaseSettings):
     db_echo: bool = False
 
     model_config = SettingsConfigDict(
-        env_file=".env",    
+        env_file=f".env.test" if os.getenv("TESTING") == "true" else ".env",    
         env_file_encoding="utf-8",
         extra="allow",
     )

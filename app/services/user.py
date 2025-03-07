@@ -1,6 +1,6 @@
 from fastapi import Depends
-from db.repositories.user import UserRepository
-from schemas.user import UserCreateSchema, UserUpdateSchema, UserSchema
+from app.db.repositories.user import UserRepository
+from app.schemas.user import UserCreateSchema, UserUpdateSchema, UserSchema
 from typing import Optional
 
 

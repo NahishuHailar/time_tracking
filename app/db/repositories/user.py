@@ -1,9 +1,9 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.models.user import UserORM
-from db.session import database
-from exceptions import NotFoundError
-from schemas.user import UserCreateSchema, UserUpdateSchema
+from app.db.models.user import UserORM
+from app.db.session import database
+from app.exceptions import NotFoundError
+from app.schemas.user import UserCreateSchema, UserUpdateSchema
 from typing import List, Optional
 
 

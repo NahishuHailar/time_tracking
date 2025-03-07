@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from services.project import ProjectService
-from schemas.project import ProjectCreateSchema, ProjectUpdateSchema, ProjectSchema
+from app.services.project import ProjectService
+from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema, ProjectSchema
 
 router = APIRouter()
 

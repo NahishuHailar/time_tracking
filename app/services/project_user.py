@@ -1,6 +1,6 @@
 from fastapi import Depends
-from db.repositories.project_user import ProjectUserRepository
-from schemas.project_user import ProjectUserCreateSchema, ProjectUserSchema
+from app.db.repositories.project_user import ProjectUserRepository
+from app.schemas.project_user import ProjectUserCreateSchema, ProjectUserSchema
 from typing import List
 
 

@@ -1,6 +1,6 @@
 from fastapi import Depends
-from db.repositories.time_entry import TimeEntryRepository
-from schemas.time_entry import TimeEntryCreateSchema, TimeEntrySchema
+from app.db.repositories.time_entry import TimeEntryRepository
+from app.schemas.time_entry import TimeEntryCreateSchema, TimeEntrySchema
 from typing import List
 
 class TimeEntryService:

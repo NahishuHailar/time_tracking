@@ -1,9 +1,9 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from db.models.time_entry import TimeEntryORM
-from db.session import database
-from schemas.time_entry import TimeEntryCreateSchema
+from app.db.models.time_entry import TimeEntryORM
+from app.db.session import database
+from app.schemas.time_entry import TimeEntryCreateSchema
 from typing import List
 
 
