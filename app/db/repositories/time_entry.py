@@ -1,4 +1,4 @@
-from typing import List
+from typing import Annotated, List
 
 from db.models.time_entry import TimeEntryORM
 from db.session import database
@@ -25,6 +25,6 @@ class TimeEntryRepository:
 
 
 def get_time_entry_repository(
-    db: AsyncSession = Depends(database.get_db),
+    db: Annotated[AsyncSession, Depends(database.get_db)],
 ) -> TimeEntryRepository:
     return TimeEntryRepository(db)

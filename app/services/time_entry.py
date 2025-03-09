@@ -1,4 +1,4 @@
-from typing import List
+from typing import Annotated, List
 
 from db.repositories.time_entry import TimeEntryRepository, get_time_entry_repository
 from fastapi import Depends
@@ -17,6 +17,6 @@ class TimeEntryService:
 
 
 def get_time_entry_service(
-    repository: TimeEntryRepository = Depends(get_time_entry_repository),
+    repository: Annotated[TimeEntryRepository, Depends(get_time_entry_repository)],
 ) -> TimeEntryService:
     return TimeEntryService(repository)

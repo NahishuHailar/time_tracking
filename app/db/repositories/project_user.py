@@ -1,4 +1,4 @@
-from typing import List
+from typing import Annotated, List
 
 from db.models.project_user import ProjectUserORM
 from db.session import database
@@ -43,6 +43,6 @@ class ProjectUserRepository:
 
 
 def get_project_users_repository(
-    db: AsyncSession = Depends(database.get_db),
+    db: Annotated[AsyncSession, Depends(database.get_db)],
 ) -> ProjectUserRepository:
     return ProjectUserRepository(db)

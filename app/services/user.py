@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Annotated, Optional
 
 from db.repositories.user import UserRepository, get_user_repository
 from fastapi import Depends
@@ -25,6 +25,6 @@ class UserService:
 
 
 def get_user_service(
-    repository: UserRepository = Depends(get_user_repository),
+    repository: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> UserService:
     return UserService(repository)

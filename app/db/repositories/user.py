@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Annotated, Optional
 
 from db.models.user import UserORM
 from db.session import database
@@ -39,5 +39,7 @@ class UserRepository:
         await self.db.flush()
 
 
-def get_user_repository(db: AsyncSession = Depends(database.get_db)) -> UserRepository:
+def get_user_repository(
+    db: Annotated[AsyncSession, Depends(database.get_db)],
+) -> UserRepository:
     return UserRepository(db)

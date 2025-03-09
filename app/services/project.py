@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Annotated, Optional
 
 from db.repositories.project import ProjectRepository, get_project_repository
 from fastapi import Depends
@@ -25,6 +25,6 @@ class ProjectService:
 
 
 def get_project_service(
-    repository: ProjectRepository = Depends(get_project_repository),
+    repository: Annotated[ProjectRepository, Depends(get_project_repository)],
 ) -> ProjectService:
     return ProjectService(repository)

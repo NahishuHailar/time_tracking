@@ -1,4 +1,4 @@
-from typing import List
+from typing import Annotated, List
 
 from db.repositories.project_user import (
     ProjectUserRepository,
@@ -27,6 +27,6 @@ class ProjectUserService:
 
 
 def get_project_users_service(
-    repository: ProjectUserRepository = Depends(get_project_users_repository),
+    repository: Annotated[ProjectUserRepository, Depends(get_project_users_repository)],
 ) -> ProjectUserService:
     return ProjectUserService(repository)

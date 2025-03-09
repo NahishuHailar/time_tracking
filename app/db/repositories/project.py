@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Annotated, Optional
 
 from db.models.project import ProjectORM
 from db.session import database
@@ -42,6 +42,6 @@ class ProjectRepository:
 
 
 def get_project_repository(
-    db: AsyncSession = Depends(database.get_db),
+    db: Annotated[AsyncSession, Depends(database.get_db)],
 ) -> ProjectRepository:
     return ProjectRepository(db)
