@@ -1,14 +1,15 @@
+from typing import Annotated, Optional
+
+from db.models.user import UserORM
+from db.session import database
+from exceptions import NotFoundError
 from fastapi import Depends
+from schemas.user import UserCreateSchema, UserUpdateSchema
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.models.user import UserORM
-from app.db.session import database
-from app.exceptions import NotFoundError
-from app.schemas.user import UserCreateSchema, UserUpdateSchema
-from typing import List, Optional
 
 
 class UserRepository:
-    def __init__(self, db: AsyncSession = Depends(database.get_db)):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
     async def get_by_id(self, user_id: int) -> Optional[UserORM]:
@@ -36,3 +37,9 @@ class UserRepository:
         user = await self.get_by_id(user_id)
         await self.db.delete(user)
         await self.db.flush()
+
+
+def get_user_repository(
+    db: Annotated[AsyncSession, Depends(database.get_db)],
+) -> UserRepository:
+    return UserRepository(db)

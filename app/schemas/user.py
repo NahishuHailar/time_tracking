@@ -6,13 +6,16 @@ class UserBaseSchema(BaseModel):
     # email: str
     # full_name: Optional[str] = None
 
+
 class UserCreateSchema(UserBaseSchema):
     pass
     # password: str
 
+
 class UserUpdateSchema(UserBaseSchema):
     pass
     # full_name: Optional[str] = None
+
 
 class UserSchema(UserBaseSchema):
     id: int

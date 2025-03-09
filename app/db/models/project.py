@@ -1,7 +1,14 @@
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from .base import BaseORM
-from typing import List
+
+if TYPE_CHECKING:
+    from .project_user import ProjectUserORM
+    from .time_entry import TimeEntryORM
+
 
 class ProjectORM(BaseORM):
     __tablename__ = "projects"
