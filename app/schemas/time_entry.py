@@ -1,5 +1,7 @@
-from pydantic import BaseModel
 from datetime import date
+
+from pydantic import BaseModel
+
 
 class TimeEntryBaseSchema(BaseModel):
     project_id: int
@@ -11,10 +13,9 @@ class TimeEntryBaseSchema(BaseModel):
 class TimeEntryCreateSchema(TimeEntryBaseSchema):
     pass
 
+
 class TimeEntrySchema(TimeEntryBaseSchema):
     id: int
 
     class Config:
         from_attributes = True
-
-        

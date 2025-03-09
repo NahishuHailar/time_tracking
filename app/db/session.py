@@ -1,6 +1,7 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
 from core.config import settings
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+
 
 class Database:
     def __init__(self):
@@ -12,11 +13,12 @@ class Database:
     async def get_db(self):
         async with self.async_session() as session:
             try:
-                yield session  
-                await session.commit()  
+                yield session
+                await session.commit()
             except Exception:
-                await session.rollback()  
+                await session.rollback()
             finally:
-                await session.close()  
+                await session.close()
+
 
 database = Database()
