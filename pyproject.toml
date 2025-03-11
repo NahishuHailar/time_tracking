@@ -4,6 +4,11 @@ version = "0.1.0"
 description = "Сервис для учета рабочего времени"
 authors = ["Ваше Имя <your@email.com>"]
 readme = "README.md"
+package-mode = false
+
+packages = [
+    { include = "app", from = "." }, 
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"

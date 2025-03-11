@@ -34,7 +34,7 @@ jobs:
             poetry-${{ runner.os }}-
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --no-root
 
       - name: Run Ruff
         run: poetry run ruff check app/ tests/
