@@ -1,18 +1,18 @@
-import sys
 import os
+import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import asyncio
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from app.db.models.base import BaseORM
+from alembic import context
 from app.core.config import settings
+from app.db.models.base import BaseORM
 
 config = context.config
 

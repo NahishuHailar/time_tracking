@@ -69,3 +69,6 @@ Thumbs.db
 # Alembic
 
 alembic/versions/*
+
+# Poetry
+poetry.lock

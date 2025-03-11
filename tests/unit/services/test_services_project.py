@@ -12,9 +12,11 @@ from app.services.project import ProjectService
 def mock_project_repo():
     return AsyncMock(spec=ProjectRepository)
 
+
 @pytest.fixture
 def project_service(mock_project_repo):
     return ProjectService(project_repository=mock_project_repo)
+
 
 @pytest.mark.asyncio
 async def test_get_project(project_service, mock_project_repo):
@@ -27,6 +29,7 @@ async def test_get_project(project_service, mock_project_repo):
     assert project.name == "Test Project"
     mock_project_repo.get_by_id.assert_called_once_with(1)
 
+
 @pytest.mark.asyncio
 async def test_create_project(project_service, mock_project_repo):
     project_data = ProjectCreateSchema(name="New Project")
@@ -38,6 +41,7 @@ async def test_create_project(project_service, mock_project_repo):
     assert project.id == 2
     assert project.name == "New Project"
     mock_project_repo.create.assert_called_once_with(project_data)
+
 
 @pytest.mark.asyncio
 async def test_update_project(project_service, mock_project_repo):
@@ -54,6 +58,7 @@ async def test_update_project(project_service, mock_project_repo):
 
     assert project.name == "Updated Name"
     mock_project_repo.update.assert_called_once_with(3, update_data)
+
 
 @pytest.mark.asyncio
 async def test_delete_project(project_service, mock_project_repo):

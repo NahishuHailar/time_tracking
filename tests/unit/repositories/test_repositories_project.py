@@ -12,9 +12,11 @@ from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema
 def mock_db_session():
     return AsyncMock(spec=AsyncSession)
 
+
 @pytest.fixture
 def project_repo(mock_db_session):
     return ProjectRepository(db=mock_db_session)
+
 
 @pytest.mark.asyncio
 async def test_get_by_id(project_repo, mock_db_session):
@@ -27,10 +29,10 @@ async def test_get_by_id(project_repo, mock_db_session):
     assert project.name == "Test Project"
     mock_db_session.get.assert_called_once_with(ProjectORM, 1)
 
+
 @pytest.mark.asyncio
 async def test_create_project(project_repo, mock_db_session):
     project_data = ProjectCreateSchema(name="New Project")
-    mock_project = ProjectORM(id=2, name=project_data.name)
 
     mock_db_session.add.return_value = None
     mock_db_session.flush.return_value = None
@@ -43,6 +45,7 @@ async def test_create_project(project_repo, mock_db_session):
     mock_db_session.flush.assert_called_once()
     mock_db_session.refresh.assert_called_once()
 
+
 @pytest.mark.asyncio
 async def test_update_project(project_repo, mock_db_session):
     mock_project = ProjectORM(id=3, name="Old Name")
@@ -54,6 +57,7 @@ async def test_update_project(project_repo, mock_db_session):
     assert project.name == "Updated Name"
     mock_db_session.flush.assert_called_once()
     mock_db_session.refresh.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_delete_project(project_repo, mock_db_session):

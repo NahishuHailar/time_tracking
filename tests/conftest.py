@@ -17,6 +17,7 @@ from app.main import app
 load_dotenv(".env.test")
 os.environ["TESTING"] = "true"
 
+
 @pytest.fixture(scope="session", autouse=True)
 def reset_test_db():
     alembic_cfg = Config("alembic.ini")
@@ -25,7 +26,9 @@ def reset_test_db():
         engine = create_async_engine(settings.db_url)
 
         async with engine.begin() as conn:
-            result = await conn.execute(text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'"))
+            result = await conn.execute(
+                text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+            )
             tables = [row[0] for row in result.fetchall()]
 
             for table in tables:
@@ -34,7 +37,8 @@ def reset_test_db():
         await engine.dispose()
 
     asyncio.run(recreate_db())
-    command.upgrade(alembic_cfg, "head")             
+    command.upgrade(alembic_cfg, "head")
+
 
 @pytest_asyncio.fixture
 async def test_db() -> AsyncSession:
@@ -47,11 +51,15 @@ async def test_db() -> AsyncSession:
 @pytest_asyncio.fixture(autouse=True)
 async def clean_db(test_db: AsyncSession):
     async with test_db as session:
-        result = await session.execute(text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'"))
+        result = await session.execute(
+            text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+        )
         tables = [row[0] for row in result.fetchall()]
 
         for table in tables:
-            await session.execute(text(f"TRUNCATE TABLE {table} RESTART IDENTITY CASCADE"))
+            await session.execute(
+                text(f"TRUNCATE TABLE {table} RESTART IDENTITY CASCADE")
+            )
         await session.commit()
 
 
@@ -62,7 +70,9 @@ async def client(test_db) -> AsyncClient:
 
     app.dependency_overrides[database.get_db] = override_get_db
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000") as ac:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://localhost:8000"
+    ) as ac:
         yield ac
     app.dependency_overrides.clear()
 

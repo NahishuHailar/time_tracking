@@ -24,7 +24,9 @@ class Settings(BaseSettings):
             f"@{self.db_host}:{self.db_port}/{self.postgres_db}"
         )
 
+
 def get_env_settings() -> Settings:
     return Settings()
+
 
 settings = get_env_settings()
