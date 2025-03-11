@@ -1,11 +1,12 @@
 from typing import Annotated, List
 
-from db.repositories.project_user import (
+from fastapi import Depends
+
+from app.db.repositories.project_user import (
     ProjectUserRepository,
     get_project_users_repository,
 )
-from fastapi import Depends
-from schemas.project_user import ProjectUserCreateSchema, ProjectUserSchema
+from app.schemas.project_user import ProjectUserCreateSchema, ProjectUserSchema
 
 
 class ProjectUserService:

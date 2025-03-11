@@ -1,8 +1,12 @@
 from typing import Annotated, List
 
-from db.repositories.time_entry import TimeEntryRepository, get_time_entry_repository
 from fastapi import Depends
-from schemas.time_entry import TimeEntryCreateSchema, TimeEntrySchema
+
+from app.db.repositories.time_entry import (
+    TimeEntryRepository,
+    get_time_entry_repository,
+)
+from app.schemas.time_entry import TimeEntryCreateSchema, TimeEntrySchema
 
 
 class TimeEntryService:

@@ -1,8 +1,9 @@
 from typing import Annotated, Optional
 
-from db.repositories.project import ProjectRepository, get_project_repository
 from fastapi import Depends
-from schemas.project import ProjectCreateSchema, ProjectSchema, ProjectUpdateSchema
+
+from app.db.repositories.project import ProjectRepository, get_project_repository
+from app.schemas.project import ProjectCreateSchema, ProjectSchema, ProjectUpdateSchema
 
 
 class ProjectService:

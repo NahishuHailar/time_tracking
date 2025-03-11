@@ -1,9 +1,12 @@
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.repositories.project import ProjectRepository
+
 from app.db.models.project import ProjectORM
+from app.db.repositories.project import ProjectRepository
 from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema
+
 
 @pytest.fixture
 def mock_db_session():
@@ -19,7 +22,7 @@ async def test_get_by_id(project_repo, mock_db_session):
     mock_db_session.get.return_value = mock_project
 
     project = await project_repo.get_by_id(1)
-    
+
     assert project.id == 1
     assert project.name == "Test Project"
     mock_db_session.get.assert_called_once_with(ProjectORM, 1)

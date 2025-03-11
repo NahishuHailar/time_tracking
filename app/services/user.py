@@ -1,8 +1,9 @@
 from typing import Annotated, Optional
 
-from db.repositories.user import UserRepository, get_user_repository
 from fastapi import Depends
-from schemas.user import UserCreateSchema, UserSchema, UserUpdateSchema
+
+from app.db.repositories.user import UserRepository, get_user_repository
+from app.schemas.user import UserCreateSchema, UserSchema, UserUpdateSchema
 
 
 class UserService:

@@ -1,8 +1,9 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from schemas.user import UserCreateSchema, UserSchema, UserUpdateSchema
-from services.user import UserService, get_user_service
+
+from app.schemas.user import UserCreateSchema, UserSchema, UserUpdateSchema
+from app.services.user import UserService, get_user_service
 
 router = APIRouter()
 

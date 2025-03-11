@@ -1,13 +1,14 @@
 from typing import Annotated, List
 
-from db.models.project_user import ProjectUserORM
-from db.session import database
-from exceptions import NotFoundError
 from fastapi import Depends
-from schemas.project_user import ProjectUserCreateSchema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+
+from app.db.models.project_user import ProjectUserORM
+from app.db.session import database
+from app.exceptions import NotFoundError
+from app.schemas.project_user import ProjectUserCreateSchema
 
 
 class ProjectUserRepository:

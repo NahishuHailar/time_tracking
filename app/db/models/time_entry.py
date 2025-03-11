@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Date, Float, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import BaseORM
+from app.db.models.base import BaseORM
 
 if TYPE_CHECKING:
-    from .project import ProjectORM
-    from .user import UserORM
+    from app.db.models.project import ProjectORM
+    from app.db.models.user import UserORM
 
 
 class TimeEntryORM(BaseORM):

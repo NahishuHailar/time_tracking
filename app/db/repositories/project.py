@@ -1,11 +1,12 @@
 from typing import Annotated, Optional
 
-from db.models.project import ProjectORM
-from db.session import database
-from exceptions import NotFoundError
 from fastapi import Depends
-from schemas.project import ProjectCreateSchema, ProjectUpdateSchema
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.models.project import ProjectORM
+from app.db.session import database
+from app.exceptions import NotFoundError
+from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema
 
 
 class ProjectRepository:

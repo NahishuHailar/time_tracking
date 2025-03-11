@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from app.core.config import settings
-=======
-from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
->>>>>>> main
+from app.core.config import settings
+
 
 class Database:
     def __init__(self):

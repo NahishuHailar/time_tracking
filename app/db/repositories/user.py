@@ -1,11 +1,12 @@
 from typing import Annotated, Optional
 
-from db.models.user import UserORM
-from db.session import database
-from exceptions import NotFoundError
 from fastapi import Depends
-from schemas.user import UserCreateSchema, UserUpdateSchema
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.models.user import UserORM
+from app.db.session import database
+from app.exceptions import NotFoundError
+from app.schemas.user import UserCreateSchema, UserUpdateSchema
 
 
 class UserRepository:

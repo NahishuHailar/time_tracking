@@ -1,4 +1,5 @@
 import pytest
+
 from app.db.models.project import ProjectORM
 
 
@@ -47,4 +48,4 @@ async def test_delete_project(client, test_db):
     assert response.json() == {"message": "Project deleted"}
 
     response = await client.get(f"/api/v1/projects/{project.id}")
-    assert response.status_code == 404  
+    assert response.status_code == 404

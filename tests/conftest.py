@@ -1,31 +1,58 @@
+import asyncio
+import os
+
 import pytest
 import pytest_asyncio
-import asyncio
+from dotenv import load_dotenv
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-import os
-from sqlalchemy.ext.asyncio import AsyncSession
 from alembic import command
 from alembic.config import Config
+from app.core.config import settings
 from app.db.session import database
 from app.main import app
-from httpx import AsyncClient, ASGITransport
-from dotenv import load_dotenv
 
-load_dotenv(".env.test") 
+load_dotenv(".env.test")
 os.environ["TESTING"] = "true"
 
 @pytest.fixture(scope="session", autouse=True)
-def apply_migrations():
+def reset_test_db():
     alembic_cfg = Config("alembic.ini")
-    command.upgrade(alembic_cfg, "head")
 
+    async def recreate_db():
+        engine = create_async_engine(settings.db_url)
+
+        async with engine.begin() as conn:
+            result = await conn.execute(text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'"))
+            tables = [row[0] for row in result.fetchall()]
+
+            for table in tables:
+                await conn.execute(text(f"DROP TABLE {table} CASCADE"))
+
+        await engine.dispose()
+
+    asyncio.run(recreate_db())
+    command.upgrade(alembic_cfg, "head")             
 
 @pytest_asyncio.fixture
 async def test_db() -> AsyncSession:
     async for session in database.get_db():
-        await session.begin() 
+        await session.begin()
         yield session
         await session.rollback()
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def clean_db(test_db: AsyncSession):
+    async with test_db as session:
+        result = await session.execute(text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'"))
+        tables = [row[0] for row in result.fetchall()]
+
+        for table in tables:
+            await session.execute(text(f"TRUNCATE TABLE {table} RESTART IDENTITY CASCADE"))
+        await session.commit()
 
 
 @pytest_asyncio.fixture
@@ -37,7 +64,7 @@ async def client(test_db) -> AsyncClient:
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost:8000") as ac:
         yield ac
-    app.dependency_overrides.clear()    
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture(scope="session")

@@ -1,8 +1,9 @@
 from typing import Annotated, List
 
 from fastapi import APIRouter, Depends
-from schemas.time_entry import TimeEntryCreateSchema, TimeEntrySchema
-from services.time_entry import TimeEntryService, get_time_entry_service
+
+from app.schemas.time_entry import TimeEntryCreateSchema, TimeEntrySchema
+from app.services.time_entry import TimeEntryService, get_time_entry_service
 
 router = APIRouter()
 

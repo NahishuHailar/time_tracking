@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import BaseORM
+from app.db.models.base import BaseORM
 
 if TYPE_CHECKING:
-    from .project_user import ProjectORM
-    from .user import UserORM
+    from app.db.models.project_user import ProjectORM
+    from app.db.models.user import UserORM
 
 
 class ProjectUserORM(BaseORM):
