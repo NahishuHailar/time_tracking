@@ -18,8 +18,7 @@ logs/
 debug.log  
 
 # Configuration files  
-*.ini  
-*.toml  
+ 
 #*.yaml  
 #*.yml  
 

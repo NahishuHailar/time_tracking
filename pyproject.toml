@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "time-tracking"
+version = "0.1.0"
+description = "Сервис для учета рабочего времени"
+authors = ["Ваше Имя <your@email.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "0.109.0"
+uvicorn = "0.27.0"
+sqlalchemy = "2.0.25"
+asyncpg = "0.29.0"
+pydantic = "^2.10.6"
+python-dotenv = "1.0.0"
+ruff = "0.1.9"
+pydantic-settings = "^2.8.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "7.4.4"
+pytest-asyncio = "0.23.5"
+alembic = "1.13.1"
+httpx = "^0.28.1"
+aiosqlite = "^0.21.0"
+black = "^25.1.0"
+pre-commit = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 88  
+target-version = "py311"  
+fix = true  
+include = ["app/**/*.py", "tests/**/*.py"]
+# exclude = ["alembic/**"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # (pycodestyle)
+    "F",  # (Pyflakes)
+    "I",  # (isort)
+    "B",  # (flake8-bugbear)
+    "W",  # (flake8-whitespace)
+]
+[tool.ruff.format] 
+quote-style = "double"
