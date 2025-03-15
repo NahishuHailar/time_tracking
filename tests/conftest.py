@@ -17,6 +17,8 @@ from tests.const import test_db_sett
 def set_env_sett():
     for key, value in test_db_sett.items():
         os.environ[key.upper()] = str(value)
+        print('setting enve vaaaaaaaaaaaaaaaaaaaaaars')
+        print(key, value)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -44,6 +46,8 @@ def reset_test_db():
 
     asyncio.run(recreate_db())
     command.upgrade(alembic_cfg, "head")
+    print("Migrations applied successfully.")
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
 
 @pytest_asyncio.fixture
