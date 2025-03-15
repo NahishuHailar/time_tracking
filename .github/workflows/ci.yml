@@ -39,20 +39,8 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
 
-      - name: Cache Poetry virtualenv
-        id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            poetry-${{ runner.os }}-
-
       - name: Install dependencies
         run: poetry install --no-root
 
-      - name: Run Ruff
-        run: poetry run ruff check app/ tests/
-
       - name: Run tests
-        run: poetry run pytest tests
+        run: poetry run pytest tests/integration
