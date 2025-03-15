@@ -65,9 +65,6 @@ pip-delete-this-directory.txt
 .DS_Store  
 Thumbs.db  
 
-# Alembic
-
-alembic/versions/*
 
 # Poetry
 poetry.lock

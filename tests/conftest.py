@@ -26,10 +26,6 @@ def reset_test_db():
     from alembic import command
     from alembic.config import Config
 
-    db_url = get_env_settings().db_url
-    print('!!!!0000000000000000!!!!!!!!!!!!!!')
-    print(f"Using database URL: {db_url}")
-
     alembic_cfg = Config("alembic.ini")
 
 
@@ -50,8 +46,6 @@ def reset_test_db():
 
     asyncio.run(recreate_db())
     command.upgrade(alembic_cfg, "head")
-    print("Migrations applied successfully.")
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
 
 @pytest_asyncio.fixture
