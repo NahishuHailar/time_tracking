@@ -16,13 +16,13 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres"
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }}"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -35,14 +35,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Extract environment variables from tests/const.py
-        run: |
-          echo "POSTGRES_USER=$(cat tests/const.py | grep "postgres_user" | cut -d "'" -f4)" >> $GITHUB_ENV
-          echo "POSTGRES_PASSWORD=$(cat tests/const.py | grep "postgres_password" | cut -d "'" -f4)" >> $GITHUB_ENV
-          echo "POSTGRES_DB=$(cat tests/const.py | grep "postgres_db" | cut -d "'" -f4)" >> $GITHUB_ENV
-          echo "POSTGRES_HOST=$(cat tests/const.py | grep "db_host" | cut -d "'" -f4)" >> $GITHUB_ENV
-          echo "POSTGRES_PORT=$(cat tests/const.py | grep "db_port" | cut -d "'" -f4)" >> $GITHUB_ENV
 
       - name: Install Poetry
         run: pip install poetry
@@ -63,4 +55,4 @@ jobs:
         run: poetry run ruff check app/ tests/
 
       - name: Run tests
-        run: poetry run pytest tests/integration
+        run: poetry run pytest tests
