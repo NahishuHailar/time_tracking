@@ -3,27 +3,32 @@ import os
 
 import pytest
 import pytest_asyncio
-from dotenv import load_dotenv
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from alembic import command
-from alembic.config import Config
-from app.core.config import settings
-from app.db.session import database
+from app.core.config import get_env_settings
+from app.db.session import get_database
 from app.main import app
+from tests.const import test_db_sett
 
-load_dotenv(".env.test")
-os.environ["TESTING"] = "true"
+
+@pytest.fixture(scope="session", autouse=True)
+def set_env_sett():
+    for key, value in test_db_sett.items():
+        os.environ[key.upper()] = str(value)
 
 
 @pytest.fixture(scope="session", autouse=True)
 def reset_test_db():
+    from alembic import command
+    from alembic.config import Config
+
     alembic_cfg = Config("alembic.ini")
 
+
     async def recreate_db():
-        engine = create_async_engine(settings.db_url)
+        engine = create_async_engine(get_env_settings().db_url)
 
         async with engine.begin() as conn:
             result = await conn.execute(
@@ -34,6 +39,7 @@ def reset_test_db():
             for table in tables:
                 await conn.execute(text(f"DROP TABLE {table} CASCADE"))
 
+
         await engine.dispose()
 
     asyncio.run(recreate_db())
@@ -42,7 +48,7 @@ def reset_test_db():
 
 @pytest_asyncio.fixture
 async def test_db() -> AsyncSession:
-    async for session in database.get_db():
+    async for session in get_database().get_db():
         await session.begin()
         yield session
         await session.rollback()
@@ -68,8 +74,7 @@ async def client(test_db) -> AsyncClient:
     async def override_get_db():
         yield test_db
 
-    app.dependency_overrides[database.get_db] = override_get_db
-
+    app.dependency_overrides[get_database().get_db] = override_get_db
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://localhost:8000"
     ) as ac:

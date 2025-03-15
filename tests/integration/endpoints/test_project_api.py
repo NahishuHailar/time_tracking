@@ -16,6 +16,7 @@ async def test_create_project(client, test_db):
 async def test_get_project(client, test_db):
     project = ProjectORM(name="Test Project")
     test_db.add(project)
+    print(project)
     await test_db.flush()
     await test_db.refresh(project)
 

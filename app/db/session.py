@@ -1,12 +1,14 @@
+from functools import lru_cache
+
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.core.config import settings
+from app.core.config import get_env_settings
 
 
 class Database:
-    def __init__(self):
-        self.engine = create_async_engine(settings.db_url, echo=True)
+    def __init__(self, **kwargs):
+        self.engine = create_async_engine(get_env_settings(**kwargs).db_url, echo=True)
         self.async_session = sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False
         )
@@ -21,5 +23,6 @@ class Database:
             finally:
                 await session.close()
 
-
-database = Database()
+@lru_cache
+def get_database():
+    return Database()

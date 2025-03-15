@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.user import UserORM
-from app.db.session import database
+from app.db.session import Database
 from app.exceptions import NotFoundError
 from app.schemas.user import UserCreateSchema, UserUpdateSchema
 
@@ -41,6 +41,6 @@ class UserRepository:
 
 
 def get_user_repository(
-    db: Annotated[AsyncSession, Depends(database.get_db)],
+    db: Annotated[AsyncSession, Depends(Database().get_db)],
 ) -> UserRepository:
     return UserRepository(db)

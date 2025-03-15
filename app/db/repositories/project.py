@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.project import ProjectORM
-from app.db.session import database
+from app.db.session import get_database
 from app.exceptions import NotFoundError
 from app.schemas.project import ProjectCreateSchema, ProjectUpdateSchema
 
@@ -43,6 +43,6 @@ class ProjectRepository:
 
 
 def get_project_repository(
-    db: Annotated[AsyncSession, Depends(database.get_db)],
+    db: Annotated[AsyncSession, Depends(get_database().get_db)],
 ) -> ProjectRepository:
     return ProjectRepository(db)
