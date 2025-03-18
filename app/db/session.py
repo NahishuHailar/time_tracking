@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from functools import lru_cache
 
+import redis.asyncio as redis
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.core.config import BaseSettingsConfig, PostgresSettings
+from app.core.config import BaseSettingsConfig, CacheSettings, PostgresSettings
 
 
 class BaseDatabase(ABC):
@@ -55,3 +56,25 @@ def get_database():
     return PostgresDatabase()
 
 
+
+class RedisDatabase(BaseDatabase):
+    def __init__(self):
+        super().__init__()
+        settings = CacheSettings.get_settings()
+        self.client = redis.Redis.from_url(settings.url, decode_responses=True)
+
+    async def connect(self):
+        try:
+            await self.client.ping()
+            return self.client
+        except redis.ConnectionError as e:
+            raise Exception(f"Redis error connection: {e}") from e
+
+    async def disconnect(self):
+        await self.client.close()
+
+    async def get_client(self):
+        return self.client
+
+def get_redis_database():
+    return RedisDatabase()
