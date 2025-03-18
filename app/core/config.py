@@ -35,11 +35,11 @@ class PostgresSettings(BaseSettingsConfig):
             f"@{self.pg_host}:{self.pg_port}/{self.postgres_db}"
         )
 
-class CacheSettings(BaseSettingsConfig):
+class RedisSettings(BaseSettingsConfig):
     redis_host: str
     redis_port: int
     redis_db: int = 0
 
     @property
     def url(self) -> str:
-        return f"redis://{self.host}:{self.port}/{self.db}"
+        return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"

@@ -5,8 +5,12 @@ from typing import Any
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from redis.asyncio import Redis
 
 from app.api.v1.endpoits import project, project_user, time_entry, user
+from app.cache.backend import RedisBackend
+from app.cache.cache import FastAPICache
+from app.core.config import RedisSettings
 
 
 class AppFactoryBase(ABC):
@@ -19,7 +23,13 @@ class AppFactoryBase(ABC):
         self._cors_origins = cors_origins or []
 
     async def _lifespan(self, app: FastAPI) -> AsyncGenerator[dict[str, Any], None]:
-        yield {}
+        redis_settings = RedisSettings.get_settings()
+        redis = Redis.from_url(redis_settings.url)
+        FastAPICache.init(RedisBackend(redis), prefix="myapp", expire=60)
+
+        yield {"redis": redis}
+
+        await redis.close()
 
     @abstractmethod
     def _setup_api_routers(self, app: FastAPI) -> None:

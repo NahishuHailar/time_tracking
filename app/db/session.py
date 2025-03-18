@@ -5,7 +5,7 @@ import redis.asyncio as redis
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.core.config import BaseSettingsConfig, CacheSettings, PostgresSettings
+from app.core.config import BaseSettingsConfig, PostgresSettings, RedisSettings
 
 
 class BaseDatabase(ABC):
@@ -58,9 +58,9 @@ def get_database():
 
 
 class RedisDatabase(BaseDatabase):
-    def __init__(self):
-        super().__init__()
-        settings = CacheSettings.get_settings()
+    def __init__(self, **kwargs):
+        settings = RedisSettings.get_settings(**kwargs)
+        super().__init__(settings)
         self.client = redis.Redis.from_url(settings.url, decode_responses=True)
 
     async def connect(self):
