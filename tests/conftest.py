@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from app.core.config import get_env_settings
+from app.core.config import PostgresSettings
 from app.db.session import get_database
 from app.main import app
 from tests.const import test_db_sett
@@ -28,7 +28,7 @@ def reset_test_db():
 
 
     async def recreate_db():
-        engine = create_async_engine(get_env_settings().db_url)
+        engine = create_async_engine(PostgresSettings.get_settings().url)
 
         async with engine.begin() as conn:
             result = await conn.execute(

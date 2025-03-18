@@ -1,27 +1,45 @@
+from abc import ABC, abstractmethod
 
 from pydantic_settings import BaseSettings
 
 
-class Settings(
+class BaseSettingsConfig(
     BaseSettings,
+    ABC,
     env_file=".env",
     env_file_encoding="utf-8",
     extra="allow",
 ):
+    @property
+    @abstractmethod
+    def url(self) -> str:
+        pass
+
+    @classmethod
+    def get_settings(cls):
+        return cls()
+
+
+class PostgresSettings(BaseSettingsConfig):
     postgres_user: str
     postgres_password: str
     postgres_db: str
-    db_host: str = "localhost"
-    db_port: int = 5432
-    db_echo: bool = False
+    pg_host: str = "localhost"
+    pg_port: int = 5432
+    pg_echo: bool = False
 
     @property
-    def db_url(self) -> str:
+    def url(self) -> str:
         return (
             f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}"
-            f"@{self.db_host}:{self.db_port}/{self.postgres_db}"
+            f"@{self.pg_host}:{self.pg_port}/{self.postgres_db}"
         )
 
+class CacheSettings(BaseSettingsConfig):
+    redis_host: str
+    redis_port: int
+    redis_db: int = 0
 
-def get_env_settings() -> Settings:
-    return Settings()
+    @property
+    def url(self) -> str:
+        return f"redis://{self.host}:{self.port}/{self.db}"
