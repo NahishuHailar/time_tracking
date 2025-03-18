@@ -48,7 +48,7 @@ def reset_test_db():
 
 @pytest_asyncio.fixture
 async def test_db() -> AsyncSession:
-    async for session in get_database().get_db():
+    async for session in get_database().get_client():
         await session.begin()
         yield session
         await session.rollback()
@@ -74,7 +74,7 @@ async def client(test_db) -> AsyncClient:
     async def override_get_db():
         yield test_db
 
-    app.dependency_overrides[get_database().get_db] = override_get_db
+    app.dependency_overrides[get_database().get_client] = override_get_db
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://localhost:8000"
     ) as ac:

@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.db.models.project_user import ProjectUserORM
-from app.db.session import Database
+from app.db.session import get_database
 from app.exceptions import NotFoundError
 from app.schemas.project_user import ProjectUserCreateSchema
 
@@ -44,6 +44,6 @@ class ProjectUserRepository:
 
 
 def get_project_users_repository(
-    db: Annotated[AsyncSession, Depends(Database().get_db)],
+    db: Annotated[AsyncSession, Depends(get_database().get_client)],
 ) -> ProjectUserRepository:
     return ProjectUserRepository(db)

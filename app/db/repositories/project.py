@@ -43,6 +43,6 @@ class ProjectRepository:
 
 
 def get_project_repository(
-    db: Annotated[AsyncSession, Depends(get_database().get_db)],
+    db: Annotated[AsyncSession, Depends(get_database().get_client)],
 ) -> ProjectRepository:
     return ProjectRepository(db)

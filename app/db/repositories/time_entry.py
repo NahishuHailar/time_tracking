@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.db.models.time_entry import TimeEntryORM
-from app.db.session import Database
+from app.db.session import get_database
 from app.schemas.time_entry import TimeEntryCreateSchema
 
 
@@ -26,6 +26,6 @@ class TimeEntryRepository:
 
 
 def get_time_entry_repository(
-    db: Annotated[AsyncSession, Depends(Database().get_db)],
+    db: Annotated[AsyncSession, Depends(get_database().get_client)],
 ) -> TimeEntryRepository:
     return TimeEntryRepository(db)
