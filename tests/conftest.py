@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from app.cache.backend import RedisBackend
 from app.cache.cache import FastAPICache
-from app.core.config import PostgresSettings, RedisSettings
+from app.core.config import EnvSettings
 from app.db.session import get_database
 from app.main import app
 from tests.const import test_db_sett
@@ -24,8 +24,8 @@ def set_env_sett():
 
 @pytest_asyncio.fixture(autouse=True)
 async def setup_cache():
-    redis_settings = RedisSettings.get_settings()
-    redis = Redis.from_url(redis_settings.url)
+    redis_settings = EnvSettings.get_settings()
+    redis = Redis.from_url(redis_settings.redis_url)
     FastAPICache.init(RedisBackend(redis), prefix="time_tracking", expire=3)
     yield
     await redis.close()
@@ -39,7 +39,7 @@ def reset_test_db():
 
 
     async def recreate_db():
-        engine = create_async_engine(PostgresSettings.get_settings().url)
+        engine = create_async_engine(EnvSettings.get_settings().postgres_url)
 
         async with engine.begin() as conn:
             result = await conn.execute(

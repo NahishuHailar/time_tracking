@@ -11,14 +11,14 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from app.core.config import PostgresSettings
+from app.core.config import EnvSettings
 from app.db.models.base import BaseORM
 
 config = context.config
 
 fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", PostgresSettings.get_settings().url)
+config.set_main_option("sqlalchemy.url", EnvSettings.get_settings().postgres_url)
 
 
 if config.config_file_name is not None:
