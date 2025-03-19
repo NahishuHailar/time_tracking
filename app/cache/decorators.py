@@ -9,7 +9,6 @@ R = TypeVar("R")
 def cache(
     expire: Optional[int] = None,
 ) -> Callable[[Callable[..., Awaitable[R]]], Callable[..., Awaitable[R]]]:
-    """Декоратор для кэширования результатов функции."""
 
     def wrapper(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[R]]:
         @wraps(func)
@@ -35,8 +34,6 @@ def cache(
                 return coder.decode(cached)
 
             result = await func(*args, **kwargs)
-            import time
-            time.sleep(4)
 
             await backend.set(cache_key, coder.encode(result), expire_)
 

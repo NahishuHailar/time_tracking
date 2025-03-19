@@ -7,12 +7,10 @@ from pydantic import BaseModel
 class Coder:
     @staticmethod
     def encode(value: Any) -> bytes:
-        """Кодирует значение в байты."""
         raise NotImplementedError
 
     @staticmethod
     def decode(value: bytes) -> Any:
-        """Декодирует значение из байтов."""
         raise NotImplementedError
 
 class JsonCoder(Coder):
