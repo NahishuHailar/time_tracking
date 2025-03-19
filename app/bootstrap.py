@@ -25,7 +25,7 @@ class AppFactoryBase(ABC):
     async def _lifespan(self, app: FastAPI) -> AsyncGenerator[dict[str, Any], None]:
         redis_settings = RedisSettings.get_settings()
         redis = Redis.from_url(redis_settings.url)
-        FastAPICache.init(RedisBackend(redis), prefix="time_tracking", expire=60)
+        FastAPICache.init(RedisBackend(redis), prefix="time_tracking", expire=1)
 
         yield {"redis": redis}
 

@@ -4,10 +4,13 @@ import os
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from app.core.config import PostgresSettings
+from app.cache.backend import RedisBackend
+from app.cache.cache import FastAPICache
+from app.core.config import PostgresSettings, RedisSettings
 from app.db.session import get_database
 from app.main import app
 from tests.const import test_db_sett
@@ -18,6 +21,14 @@ def set_env_sett():
     for key, value in test_db_sett.items():
         os.environ[key.upper()] = str(value)
 
+
+@pytest_asyncio.fixture(autouse=True)
+async def setup_cache():
+    redis_settings = RedisSettings.get_settings()
+    redis = Redis.from_url(redis_settings.url)
+    FastAPICache.init(RedisBackend(redis), prefix="time_tracking", expire=3)
+    yield
+    await redis.close()
 
 @pytest.fixture(scope="session", autouse=True)
 def reset_test_db():

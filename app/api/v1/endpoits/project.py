@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
+from app.cache.decorators import cache
 from app.schemas.project import ProjectCreateSchema, ProjectSchema, ProjectUpdateSchema
 from app.services.project import ProjectService, get_project_service
 
@@ -17,6 +18,7 @@ async def create_project(
 
 
 @router.get("/projects/{project_id}", response_model=ProjectSchema)
+@cache()
 async def read_project(
     project_id: int,
     project_service: Annotated[ProjectService, Depends(get_project_service)],
