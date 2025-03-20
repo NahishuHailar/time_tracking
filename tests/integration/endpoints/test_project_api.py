@@ -55,7 +55,8 @@ async def test_delete_project(client, test_db):
 
     # Waiting for cashing to be cleared
     import time
-    time.sleep(5)
+
+    time.sleep(7)
 
     response = await client.get(f"/api/v1/projects/{project.id}")
     assert response.status_code == 404

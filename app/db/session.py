@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from functools import lru_cache
 
 import redis.asyncio as redis
@@ -8,32 +7,10 @@ from sqlalchemy.orm import sessionmaker
 from app.core.config import EnvSettings
 
 
-class BaseDatabase(ABC):
-    def __init__(self, settings: EnvSettings):
-        self.settings = settings
-
-    @abstractmethod
-    async def connect(self):
-        pass
-
-    @abstractmethod
-    async def disconnect(self):
-        pass
-
-    @abstractmethod
-    async def get_client(self):
-        pass
-
-
-
-class PostgresDatabase(BaseDatabase):
+class PostgresDatabase:
     def __init__(self, **kwargs):
         settings = EnvSettings.get_settings(**kwargs)
-        super().__init__(settings)
-        self.engine = create_async_engine(
-            self.settings.postgres_url,
-            echo=self.settings.pg_echo
-            )
+        self.engine = create_async_engine(settings.postgres_url, echo=settings.pg_echo)
         self.async_session = sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False
         )
@@ -54,30 +31,31 @@ class PostgresDatabase(BaseDatabase):
             finally:
                 await session.close()
 
+
 @lru_cache
 def get_database():
     return PostgresDatabase()
 
 
-
-class RedisDatabase(BaseDatabase):
+class RedisDatabase:
     def __init__(self, **kwargs):
         settings = EnvSettings.get_settings(**kwargs)
-        super().__init__(settings)
-        self.client = redis.Redis.from_url(settings.redis_url, decode_responses=True)
+        self._client = redis.Redis.from_url(settings.redis_url, decode_responses=True)
 
     async def connect(self):
         try:
-            await self.client.ping()
-            return self.client
+            await self._client.ping()
+            return self._client
         except redis.ConnectionError as e:
             raise Exception(f"Redis error connection: {e}") from e
 
     async def disconnect(self):
-        await self.client.close()
+        await self._client.close()
 
     async def get_client(self):
-        return self.client
+        return self._client
 
-def get_redis_database():
+
+@lru_cache
+def get_redis_db():
     return RedisDatabase()

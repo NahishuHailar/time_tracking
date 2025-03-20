@@ -1,22 +1,24 @@
+import json
 from functools import wraps
 from typing import Awaitable, Callable, Optional, TypeVar
 
-from app.cache.cache import FastAPICache
-from app.cache.coder import JsonCoder
+from pydantic import BaseModel
+
+from app.cache.backend import get_redis_client
+from app.schemas.project import ProjectSchema
 
 R = TypeVar("R")
+
 
 def cache(
     expire: Optional[int] = None,
 ) -> Callable[[Callable[..., Awaitable[R]]], Callable[..., Awaitable[R]]]:
-
     def wrapper(func: Callable[..., Awaitable[R]]) -> Callable[..., Awaitable[R]]:
         @wraps(func)
         async def inner(*args, **kwargs) -> R:
-            backend = FastAPICache.get_backend()
-            prefix = FastAPICache.get_prefix()
-            coder = JsonCoder()
-            expire_ = expire or FastAPICache.get_expire()
+            redis = await get_redis_client()
+            prefix = "time_tracking"
+            expire_ = expire or 5
 
             filtered_kwargs = {
                 key: value
@@ -25,17 +27,25 @@ def cache(
             }
 
             cache_key = (
-            f"{prefix}:{func.__module__}:{func.__name__}:"
-            f"{args}:{filtered_kwargs}"
+                f"{prefix}:{func.__module__}:{func.__name__}:"
+                f"{args}:{filtered_kwargs}"
             )
 
-            ttl, cached = await backend.get_with_ttl(cache_key)
-            if cached is not None:
-                return coder.decode(cached)
+            cached = await redis.get(cache_key)
+            if cached:
+                return json.loads(cached)
 
             result = await func(*args, **kwargs)
 
-            await backend.set(cache_key, coder.encode(result), expire_)
+            if hasattr(result, "__mapper__"):  # Check if result is a SQLAlchemy object
+                result = ProjectSchema.from_orm(result)
+
+            if isinstance(result, BaseModel):
+                encode_result = result.model_dump_json()
+            else:
+                encode_result = json.dumps(result)
+
+            await redis.set(cache_key, encode_result, expire_)
 
             return result
 

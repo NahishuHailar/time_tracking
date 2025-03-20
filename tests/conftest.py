@@ -4,14 +4,11 @@ import os
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
-from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from app.cache.backend import RedisBackend
-from app.cache.cache import FastAPICache
 from app.core.config import EnvSettings
-from app.db.session import get_database
+from app.db.session import get_database, get_redis_db
 from app.main import app
 from tests.const import test_db_sett
 
@@ -24,11 +21,10 @@ def set_env_sett():
 
 @pytest_asyncio.fixture(autouse=True)
 async def setup_cache():
-    redis_settings = EnvSettings.get_settings()
-    redis = Redis.from_url(redis_settings.redis_url)
-    FastAPICache.init(RedisBackend(redis), prefix="time_tracking", expire=3)
+    redis = get_redis_db()
     yield
-    await redis.close()
+    await redis.disconnect()
+
 
 @pytest.fixture(scope="session", autouse=True)
 def reset_test_db():
@@ -36,7 +32,6 @@ def reset_test_db():
     from alembic.config import Config
 
     alembic_cfg = Config("alembic.ini")
-
 
     async def recreate_db():
         engine = create_async_engine(EnvSettings.get_settings().postgres_url)
@@ -49,7 +44,6 @@ def reset_test_db():
 
             for table in tables:
                 await conn.execute(text(f"DROP TABLE {table} CASCADE"))
-
 
         await engine.dispose()
 
