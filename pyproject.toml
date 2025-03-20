@@ -6,9 +6,6 @@ authors = ["Ваше Имя <your@email.com>"]
 readme = "README.md"
 package-mode = false
 
-packages = [
-    { include = "app", from = "." }, 
-]
 
 [tool.poetry.dependencies]
 python = "^3.11"

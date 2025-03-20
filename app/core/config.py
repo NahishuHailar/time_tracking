@@ -10,19 +10,19 @@ class EnvSettings(
     postgres_user: str
     postgres_password: str
     postgres_db: str
-    pg_host: str = "localhost"
-    pg_port: int = 5432
-    pg_echo: bool = False
+    postgres_host: str = "localhost"
+    postgres_port: int = 5432
+    postgres_echo: bool = False
 
-    redis_host: str
-    redis_port: int
+    redis_host: str = "localhost"
+    redis_port: int = 6379
     redis_db: int = 0
 
     @property
     def postgres_url(self) -> str:
         return (
             f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}"
-            f"@{self.pg_host}:{self.pg_port}/{self.postgres_db}"
+            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
         )
 
     @property

@@ -10,7 +10,9 @@ from app.core.config import EnvSettings
 class PostgresDatabase:
     def __init__(self, **kwargs):
         settings = EnvSettings.get_settings(**kwargs)
-        self.engine = create_async_engine(settings.postgres_url, echo=settings.pg_echo)
+        self.engine = create_async_engine(
+            settings.postgres_url, echo=settings.postgres_echo
+        )
         self.async_session = sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False
         )
