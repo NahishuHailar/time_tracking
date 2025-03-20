@@ -7,7 +7,6 @@ class ProjectBase(BaseModel):
 
 class ProjectBaseSchema(BaseModel):
     name: str
-    # description: Optional[str] = None
 
 
 class ProjectCreateSchema(ProjectBaseSchema):
@@ -20,8 +19,6 @@ class ProjectUpdateSchema(ProjectBaseSchema):
 
 class ProjectSchema(ProjectBaseSchema):
     id: int
-    # owner_id: int
-    # created_at: datetime
 
     class Config:
         from_attributes = True

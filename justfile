@@ -5,7 +5,9 @@ test:
     pytest tests/
 
 lint:
-    poetry run ruff check app tests
+    poetry run ruff check --fix .
+    poetry run ruff format .
+    poetry run black .
 
 migrate:
     alembic upgrade head

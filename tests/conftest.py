@@ -7,8 +7,8 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from app.core.config import get_env_settings
-from app.db.session import get_database
+from app.core.config import EnvSettings
+from app.db.session import get_database, get_redis_db
 from app.main import app
 from tests.const import test_db_sett
 
@@ -19,6 +19,13 @@ def set_env_sett():
         os.environ[key.upper()] = str(value)
 
 
+@pytest_asyncio.fixture(autouse=True)
+async def setup_cache():
+    redis = get_redis_db()
+    yield
+    await redis.disconnect()
+
+
 @pytest.fixture(scope="session", autouse=True)
 def reset_test_db():
     from alembic import command
@@ -26,9 +33,8 @@ def reset_test_db():
 
     alembic_cfg = Config("alembic.ini")
 
-
     async def recreate_db():
-        engine = create_async_engine(get_env_settings().db_url)
+        engine = create_async_engine(EnvSettings.get_settings().postgres_url)
 
         async with engine.begin() as conn:
             result = await conn.execute(
@@ -39,7 +45,6 @@ def reset_test_db():
             for table in tables:
                 await conn.execute(text(f"DROP TABLE {table} CASCADE"))
 
-
         await engine.dispose()
 
     asyncio.run(recreate_db())
@@ -48,7 +53,7 @@ def reset_test_db():
 
 @pytest_asyncio.fixture
 async def test_db() -> AsyncSession:
-    async for session in get_database().get_db():
+    async for session in get_database().get_client():
         await session.begin()
         yield session
         await session.rollback()
@@ -74,7 +79,7 @@ async def client(test_db) -> AsyncClient:
     async def override_get_db():
         yield test_db
 
-    app.dependency_overrides[get_database().get_db] = override_get_db
+    app.dependency_overrides[get_database().get_client] = override_get_db
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://localhost:8000"
     ) as ac:
